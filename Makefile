@@ -14,7 +14,7 @@ TEST_SOURCES = $(SOURCES)
 TEST_OBJS = $(TEST_SOURCES:.c=.o)
 TEST_EXEC_NAME = 
 
-all: test
+all: test clean
 
 %.o:  %.c %.h
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -28,6 +28,5 @@ clean:
 
 test: $(TEST_OBJS) $(BASE_HEADERS)
 	#$(CC) $(CFLAGS) $^ -o $@
-	rm -f $(SOURCE_DIR)/*.o
 
 .PHONY: clean all
