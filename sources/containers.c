@@ -7,7 +7,7 @@ bool item_less(PQItem *i1, PQItem *i2){
     return (i1->key < i2->key ? true : false);
 }
 
-PQ* PQinit(int maxElems, bool inplace){
+PQ* PQinit(uint maxElems, bool inplace){
 	PQ* pq = malloc(sizeof(*pq));
 	if (!pq) return NULL;
 	pq->maxElems = MAX(1, maxElems);
@@ -17,20 +17,38 @@ PQ* PQinit(int maxElems, bool inplace){
 	return pq;
 }
 
-PQ* PQheapify(PQItem *items, int nElems){
+PQ* PQheapify(PQItem *items, uint nElems){
 	assert (nElems > 0);
 	PQ* pq = PQinit(nElems, true);
 	if (!pq) return NULL;
 	pq->nElems = nElems;
 	pq->items = items;
-	for(int k = nElems/2; k>=0; k--){
+	for(uint k = nElems/2; k>=0; k--){
 		fixDown(pq->items, k, nElems);
 	}
 	return pq;
 }
 
-void fixDown(PQItem *items, int k, int nElems){
-	int j; PQItem temp;
+bool PQinstert(PQ *pq, PQItem v){
+	uint nElems = pq->nElems, maxElems = pq->maxElems;
+	if (nElems >= maxElems) pq = PQrealloc(pq, maxElems*2);
+	if (!pq) return false;
+	pq->items[nElems] = v;
+	pq->nElems++;
+	fixUP(pq->items, nElems, nElems+1);
+	return true;
+}
+
+PQ* PQrealloc(PQ *pq, uint newMaxElems){
+	if(!pq) return NULL;
+	newMaxElems = MAX(newMaxElems,1); 
+	pq->items = realloc (pq->items, newMaxElems * sizeof(PQItem));
+	if (!pq->items) { free(pq); return NULL; }
+	pq->maxElems = newMaxElems;
+	return pq;
+}
+void fixDown(PQItem *items, uint k, uint nElems){
+	uint j; PQItem temp;
 	while(2*k < nElems){
 		j = 2*k;
 		temp = items[k];
@@ -42,7 +60,7 @@ void fixDown(PQItem *items, int k, int nElems){
 	}
 }
 
-void fixUP(PQItem *items, int k, int nElems){
+void fixUP(PQItem *items, uint k, uint nElems){
 	assert(k<nElems);
 	PQItem temp;
 	while (k>0 && item_less(&items[k], &items[k/2])){
@@ -60,4 +78,37 @@ bool PQDelete(PQ *pq){
 		free(pq);
 	}
 	return true;
+}
+
+PQItem PQdelmax(PQ *pq){
+	assert (!pq->nElems);
+	PQItem maxit = pq->items[0];
+	pq->items[0] = pq->items[pq->nElems--];
+	fixDown(pq->items, 0, pq->nElems);
+	return maxit;
+}
+
+PQItem* PQfindmax(PQ *pq){
+	if (!pq->nElems) return NULL;
+	return &(pq->items[0]);
+}
+
+bool PQchange(PQ *pq, uint rank, double key){
+	PQItem *items = pq->items;
+	double last_key = items[rank].key;
+	if (last_key == key) return true;
+	items[rank].key = key;
+	if (last_key > key) fixUP(pq->items, rank, pq->nElems);
+	else fixDown(pq->items, rank, pq->nElems);
+	return true;
+}
+PQItem PQRemove(PQ *pq, uint rank){
+	assert(rank < pq->nElems);
+	PQItem item = pq->items[rank];
+	pq->items[rank] = pq->items[--pq->nElems];
+	fixDown(pq->items, rank, pq->nElems);
+	return item;
+}
+bool PQEmpty(PQ *pq){
+	return (pq->nElems ? false : true);
 }
