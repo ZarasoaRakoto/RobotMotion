@@ -28,6 +28,6 @@ clean:
 
 test: $(TEST_OBJS) $(BASE_HEADERS)
 	#$(CC) $(CFLAGS) $^ -o $@
-	#rm -f $(SOURCE_DIR)/*.o
+	rm -f $(SOURCE_DIR)/*.o
 
 .PHONY: clean all
