@@ -3,6 +3,8 @@
 
 #include "stdclibs.h"
 
+void* computeVgraph(VGnode *pointlist, int size);
+void* process(VGnode *p, VGnode *q);
 void addRightmost(VGnode *p, VGnode *q);
 void addLeftOf(VGnode *p, VGnode *q);
 void removeNode(VGnode *p);

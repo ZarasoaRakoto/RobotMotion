@@ -15,6 +15,7 @@ void StackInit(stackT *stackP, int maxSize);
 void StackDestroy(stackT *stackP);
 void StackPush(stackT *stackP, stackElementT element);
 stackElementT StackPop(stackT *stackP);
+stackElementT StackTop(stackT *stackP);
 int StackIsEmpty(stackT *stackP);
 int StackIsFull(stackT *stackP);
 
