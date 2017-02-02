@@ -22,4 +22,20 @@ typedef struct VGpt{
     struct VGpt *rightMostSon;
 } VGnode;
 
+typedef struct pt {
+    double x;
+    double y;
+    pt *next;
+} Raw_point;
+
+typedef struct {
+    Raw_points *points;
+    int size; int maxSize;
+} Polygon;
+
+typedef struct {
+    Polygon *obstacles;
+    int size; int maxSize;
+} Obstacles;
+
 #endif
