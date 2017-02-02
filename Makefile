@@ -1,6 +1,6 @@
 TARGET = 
 SOURCE_DIR = sources
-SOURCES = $(SOURCE_DIR)/containers.c $(SOURCE_DIR)/robotControl.c
+SOURCES = $(SOURCE_DIR)/containers.c $(SOURCE_DIR)/robotControl.c $(SOURCE_DIR)/visibilityGraph.c $(SOURCE_DIR)/stack.c
 OBJS = $(SOURCES:.c=.o)
 CC = gcc
 CFLAGS = -Wall -Werror -std=gnu99

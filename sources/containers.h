@@ -30,4 +30,7 @@ void fixDown(PQItem *items, uint k, uint nElems);  // Restore heap conformity do
 /* Implementation en matrice pleine */
 typedef struct { unsigned char bytes[640*360]; } Image;
 
+
+/***************************************************************************************/
+
 #endif

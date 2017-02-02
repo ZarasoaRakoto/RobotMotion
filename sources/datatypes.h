@@ -12,4 +12,14 @@ typedef Point PQItem;
 
 bool item_less(PQItem *i1, PQItem *i2);
 
+
+typedef struct VGpt{
+    double x;
+    double y;
+    struct VGpt *father;
+    struct VGpt *left;
+    struct VGpt *right;
+    struct VGpt *rightMostSon;
+} VGnode;
+
 #endif
