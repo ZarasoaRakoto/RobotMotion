@@ -23,7 +23,8 @@
         typedef enum { false, true } bool;
     #endif
 
-    #define MAX(A,B) ((A) > (B) ? A : B)
+    #define MAX(A,B) ((A) >= (B) ? A : B)
+    #define MIN(A,B) ((A) <= (B) ? A : B)
     #define M_PI 3.14159265358979323846
 
 #endif

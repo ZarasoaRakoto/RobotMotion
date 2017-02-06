@@ -34,8 +34,17 @@ typedef struct {
 } Polygon;
 
 typedef struct {
-    Polygon *obstacles;
+    Polygon *polygons;
     int size; int maxSize;
 } Obstacles;
+void init_obstacles(Obstacles *obstacles, int maxSize);
+void shrink(Polygon* obstacles, int *intervals, int n_actifs, int i1, int i2, int j);
+void add_point(Polygon* polygon, Raw_point p);
+void insert_polygon(Polygon *p, int maxSize);
+void add_polygon(Obstacles* obstacles, int k);
+void init_polygon(int maxSize);
+void insert_interval(int *intervals, int n_actifs, int *n_max, int i1, int i2, int j, int *k);
+
+static int nb_obs_points = 10;
 
 #endif
