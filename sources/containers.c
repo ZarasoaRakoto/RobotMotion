@@ -3,7 +3,7 @@
    de motion planning
 */
 #include "containers.h"
-bool item_less(PQItem *i1, PQItem *i2){
+bool item_less(PQItem i1, PQItem i2){
     return (i1->key < i2->key ? true : false);
 }
 
@@ -47,13 +47,14 @@ PQ* PQrealloc(PQ *pq, uint newMaxElems){
 	pq->maxElems = newMaxElems;
 	return pq;
 }
+
 void fixDown(PQItem *items, uint k, uint nElems){
 	uint j; PQItem temp;
 	while(2*k < nElems){
 		j = 2*k;
 		temp = items[k];
-		if ((j < nElems-1) && item_less(&items[j+1], &items[j])) j++;
-		if (item_less(&temp, &items[j])) break;
+		if ((j < nElems-1) && item_less(items[j+1], items[j])) j++;
+		if (item_less(temp, items[j])) break;
 		items[k] = items[j]; // swapping when necessary
 		items[j] = temp;
 		k = j;
@@ -63,7 +64,7 @@ void fixDown(PQItem *items, uint k, uint nElems){
 void fixUP(PQItem *items, uint k, uint nElems){
 	assert(k<nElems);
 	PQItem temp;
-	while (k>0 && item_less(&items[k], &items[k/2])){
+	while (k>0 && item_less(items[k], items[k/2])){
 		// swapping when necessary
 		temp = items[k];
 		items[k] = items[k/2];
@@ -81,9 +82,9 @@ bool PQDelete(PQ *pq){
 }
 
 PQItem PQdelmax(PQ *pq){
-	assert (!pq->nElems);
+	assert (pq->nElems);
 	PQItem maxit = pq->items[0];
-	pq->items[0] = pq->items[pq->nElems--];
+	pq->items[0] = pq->items[--pq->nElems];
 	fixDown(pq->items, 0, pq->nElems);
 	return maxit;
 }
@@ -95,9 +96,9 @@ PQItem* PQfindmax(PQ *pq){
 
 bool PQchange(PQ *pq, uint rank, double key){
 	PQItem *items = pq->items;
-	double last_key = items[rank].key;
+	double last_key = items[rank]->key;
 	if (last_key == key) return true;
-	items[rank].key = key;
+	items[rank]->key = key;
 	if (last_key > key) fixUP(pq->items, rank, pq->nElems);
 	else fixDown(pq->items, rank, pq->nElems);
 	return true;
@@ -109,6 +110,7 @@ PQItem PQRemove(PQ *pq, uint rank){
 	fixDown(pq->items, rank, pq->nElems);
 	return item;
 }
+
 bool PQEmpty(PQ *pq){
 	return (pq->nElems ? false : true);
 }

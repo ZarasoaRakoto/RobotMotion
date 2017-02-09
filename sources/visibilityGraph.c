@@ -8,7 +8,7 @@
 	complexity worst case O(n^2)
 */
 
-void * computeVgraph(VGnode * pointlist, int size){
+void computeVgraph(VGnode * pointlist, int size){
 	sortNodes(pointlist, size);
 	VGnode pInf = {pointlist[0].x, DBL_MAX, NULL, NULL, NULL, NULL};
 	VGnode mpInf = {pointlist[0].x, DBL_MIN, NULL, NULL, NULL, NULL};
@@ -21,7 +21,7 @@ void * computeVgraph(VGnode * pointlist, int size){
 	while(!StackIsEmpty(&nodeStack)){
 		p = StackPop(&nodeStack);
 		pr = p->right; q = p->father;
-		if (q != &mpInf) process(p,q); // crutial
+		if (q != &mpInf) assert(process(p->point, q->point)); // crutial
 		z = q->left;
 		removeNode(p);
 		if(!z || leftTurn(p, z, z->father)==false) addLeftOf(p,q);
@@ -33,18 +33,17 @@ void * computeVgraph(VGnode * pointlist, int size){
 		if (!p->left && p->father != &pInf) StackPush(&nodeStack, p);
 		if (!pr)  StackPush(&nodeStack, pr);
 	}
-	return NULL;
 }
 
-int process(VGnode *p, VGnode *q){
-	if (q == otherNode(p)) gatherEdge(p,q);
-	else if (Edge(q) == VISIBLE(p)) {VISIBLE(p) = VISIBLE(q); gatherEdge(p,q);}
-	else if (before(p, q, VISIBLE(p))) {VISIBLE(p) = Edge(q); gatherEdge(p,q);}
-	return 0;
+bool process(Raw_point *p, Raw_point *q){
+	if (q == otherNode(p)) return gatherEdge(p,q);
+	else if (Edge(q) == VISIBLE(p)) {VISIBLE(p) = VISIBLE(q); return gatherEdge(p,q);}
+	else if (before(p, q, VISIBLE(p))) {VISIBLE(p) = Edge(q); return gatherEdge(p,q);}
+	return true;
 }
 
-VGnode* otherNode(VGnode *p) {
-	return
+Raw_point* otherNode(Raw_point *p) {
+	return p->next;
 }
 void addRightmost(VGnode *p, VGnode *q){
 	assert(q); assert(p);
@@ -71,26 +70,10 @@ void removeNode(VGnode *p){
 	if(p->right) p->right->left = p->left;
 }
 
-VGnode* rightBrother(VGnode *p){
-	return p->right;
-}
-
-VGnode* leftBrother(VGnode *p){
-	return p->left;
-}
-
-VGnode* father(VGnode *p){
-	return p->father;
-}
-
-VGnode*rightMostson(VGnode *p){
-	return p->rightMostSon;
-}
-
 static int compare_points (void const *a, void const *b)
 {
-   VGnode const *pa = a;
-   VGnode const *pb = b;
+   Raw_point const *pa = a->point;
+   Raw_point const *pb = b->point;
    return ((pa->x < pb->x) || ((pa->x == pb->x) && (pa->y < pb->y)));
 }
 
@@ -102,5 +85,22 @@ void sortNodes(VGnode * pointlist, int size){
 bool leftTurn(VGnode *p, VGnode *q, VGnode *r){
 	assert(p->father && q->father);
 	if (!r->father) return (compare_points(p , q) ? true : false); // handling pInf case
-	return ((q->x - p->x) * (r->y - p->y) - (r->x - p->x) * (q->y - p->y) > 0) ? true : false;
+	pp = p->point; qp = q->point; rp = r->point;
+	return ((((qp->x - pp->x) * (rp->y - pp->y) - (rp->x - pp->x) * (qp->y - pp->y)) > 0) ? true : false);
+}
+
+bool gatherEdge(Raw_point *p1, Raw_point *p2){
+	// populating the motion graph
+}
+
+VGedge Edge(VGnode *n){
+	VGedge e =  {&n->point, &n->point->next};
+	return e;
+}
+VGedge VISIBLE(VGnode *n){
+	VGedge e =  {NULL, NULL};
+	return e;
+}
+bool before(VGnode *p, VGnode *q, VGedge e){
+	return true;
 }
