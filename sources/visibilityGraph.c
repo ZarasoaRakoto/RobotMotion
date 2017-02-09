@@ -37,13 +37,13 @@ void computeVgraph(VGnode * pointlist, int size){
 
 bool process(Raw_point *p, Raw_point *q){
 	if (q == otherNode(p)) return gatherEdge(p,q);
-	else if (Edge(q) == VISIBLE(p)) {VISIBLE(p) = VISIBLE(q); return gatherEdge(p,q);}
-	else if (before(p, q, VISIBLE(p))) {VISIBLE(p) = Edge(q); return gatherEdge(p,q);}
+	//else if (Edge(q) == VISIBLE(p)) {VISIBLE(p) = VISIBLE(q); return gatherEdge(p,q);}
+	//else if (before(p, q, VISIBLE(p))) {VISIBLE(p) = Edge(q); return gatherEdge(p,q);}
 	return true;
 }
 
 Raw_point* otherNode(Raw_point *p) {
-	return p->next;
+	return (p->adjlist->head ? p->adjlist->head->item : NULL);
 }
 void addRightmost(VGnode *p, VGnode *q){
 	assert(q); assert(p);
@@ -90,7 +90,8 @@ bool leftTurn(VGnode *p, VGnode *q, VGnode *r){
 }
 
 bool gatherEdge(Raw_point *p1, Raw_point *p2){
-	// populating the motion graph
+	// populating the motion visibility graph
+	if (!(p1->adjlist->head) || (p1->adjlist->head->item != p2)) list_insert(p1->adjlist, p2);
 }
 
 VGedge Edge(VGnode *n){

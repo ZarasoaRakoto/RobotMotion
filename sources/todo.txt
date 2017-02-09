@@ -1,0 +1,6 @@
+1) Raw_point new1 = {0,0,DBL_MAX, NULL, NULL, NULL}, new2 = {0,0,DBL_MAX, NULL, NULL, NULL};
+   calcul des coordonnées en fonction de la position de départ et des positions i et j sur l'image
+
+   utile dans fonction shrink de robotControl.c
+
+2)  toutes les fonctions free et les appels à ces fonctions

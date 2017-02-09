@@ -9,6 +9,7 @@ void add_polygon(Obstacles* obstacles, int k);
 void insert_polygon(Polygon *p, int maxSize);
 Obstacles* init_obstacles(int maxSize);
 void merge_polygons(Polygon* polygons, int base_index, int merged_index);
+void forward_label_correcting(Raw_point *xi, Raw_point *xg);
 
 
 int* init_intervals(void){
@@ -71,7 +72,7 @@ Obstacles* camera(Obstacles *obstacles){ // intervals = [i1, i2, last_j]*
 
 void shrink(Obstacles* obstacles, int *intervals, int i1, int i2, int j){
     bool already_merged = false; int base_index = 0;
-    Raw_point new1 = {0,0,NULL}, new2 = {0,0,NULL};
+    Raw_point new1 = {0,0,DBL_MAX, NULL, NULL, NULL}, new2 = {0,0,DBL_MAX, NULL, NULL, NULL};
     int *last_used = &intervals[0], *free_index = &intervals[1];
     for(int i = 1; i < *last_used; i++){
         if (i2 >= intervals[3*i] && i1 <= intervals[3*i+1]) { // adding a point in growing polygon
@@ -162,10 +163,46 @@ unsigned char gaelle(unsigned char c){
     return c;
 }
 
+void forward_label_correcting(Raw_point *xi, Raw_point *xg){
+    // implementation of Dijkstra algorithm
+    PQ* prior_queue = PQinit(10, false);
+    xi.key = 0; // all other keys are std::DBL_MAX
+    xi->prev = NULL;
+    double next_dist;
+    Raw_point *temp, *guess; AdjListNode *active_node;
+    assert(PQinstert(prior_queue, xi));
+    while(!PQEmpty(prior_queue)){
+        temp = PQdelmax(prior_queue);
+        active_node = temp->adjlist->head; // parcours de la liste d adjacence
+        while(active_node){
+            guess = active_node->item;
+            next_dist = sqrt(pow(temp->x - guess->x, 2) + pow(temp->y - guess->y, 2));
+            if (temp.key + next_dist < MIN(guess->key, xg->key)){
+                guess->key = temp->key + next_dist;
+                guess->prev = temp;
+                if (guess != xg) assert(PQinstert(prior_queue, guess));
+                else {
+                    prior_queue->nElems = 0; // artificially emptying the queue
+                    break;
+                }
+            }
+            active_node = active_node->next; // accessing all sons of the temporary node
+        } 
+    }
+    // reconstructing the path
+    assert(guess == xg);
+    while(guess->prev){
+        list_delete(guess->prev->adjlist->head);
+        list_insert(guess->prev->adjlist, guess);
+        guess = guess->prev;
+    }
+}
+
 
 int main(int agrc, char**argv){
     Obstacles * obs = init_obstacles(10);
     obs = camera(obs);
+    printf("nombre d'obstacles : %d \n", obs->size);
     return 0;
 }
 

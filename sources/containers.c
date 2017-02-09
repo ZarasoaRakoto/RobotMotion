@@ -114,3 +114,25 @@ PQItem PQRemove(PQ *pq, uint rank){
 bool PQEmpty(PQ *pq){
 	return (pq->nElems ? false : true);
 }
+
+AdjList* init_list(void){
+	AdjList *new = malloc(sizeof(*new)); assert(new);
+	new->head = NULL;
+	return new;
+}
+
+void list_insert(AdjList *L, ListItem i){ // always downward : the first adj element should remain the first
+	AdjListNode *new = malloc(sizeof(*new)); assert(new);
+	new->item = i;
+	if(L->head) {
+		new->next = L->head->next; L->head->next = new;
+	}
+	else { L->head = new; new->next = NULL}
+}
+
+void list_delete(AdjListNode *L){
+	if(L) {
+		if (L->next) list_delete(L->next);
+		free(L);
+	}
+}

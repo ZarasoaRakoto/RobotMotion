@@ -9,8 +9,7 @@ typedef struct pt {
     double x;
     double y;
     double key;       // used for dijkstra algorithm
-    struct pt *next;  // used as leftmost son for de dijkstra algorithm 
-    struct pt *right; // right brother, useful for Dijkstra algorithm graph representation
+    AdjList *adjlist;       // adjacency list
     struct pt *prev;  // useful for reconstructing the path from the goal node
 } Raw_point;
 
@@ -23,6 +22,7 @@ typedef struct VGpt{
     struct VGpt *right;
     struct VGpt *rightMostSon;
 } VGnode;
+
 
 typedef struct{
     Raw_point *base, *next;
@@ -38,6 +38,19 @@ typedef struct {
     Polygon *polygons;
     int size; int maxSize;
 } Obstacles;
+
+typedef Raw_point* ListItem; 
+// A structure to represent an adjacency list node
+struct AdjListNode
+{
+    ListItem item;
+    struct AdjListNode* next;
+};
+ 
+// A structure to represent an adjacency list
+typedef struct {
+    struct AdjListNode *head;  // pointer to head node of list
+} AdjList;
 
 
 #define nb_obs_points 3
