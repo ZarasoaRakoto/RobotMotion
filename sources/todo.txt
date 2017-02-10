@@ -11,3 +11,6 @@
 
 
 4) vérifier la spec de arctan dans le main de robotControl.c
+
+5) possibilité de recevoir le message succeed et arreter la boucle
+   dans robotControl

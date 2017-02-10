@@ -11,6 +11,7 @@ void insert_polygon(Polygon *p, int maxSize);
 Obstacles* init_obstacles(int maxSize);
 void merge_polygons(Polygon* polygons, int base_index, int merged_index);
 void forward_label_correcting(Raw_point *xi, Raw_point *xg);
+void  Graham( Polygon *p);
 
 
 int* init_intervals(void){
@@ -205,7 +206,9 @@ void forward_label_correcting(Raw_point *xi, Raw_point *xg){
 }
 
 void convex_hulls(Obstacles * obs){
-
+    for(int i = 0; i<obs->size; i++){
+        Graham(&obs->polygons[i]);
+    }
 }
 
 
