@@ -4,3 +4,10 @@
    utile dans fonction shrink de robotControl.c
 
 2)  toutes les fonctions free et les appels à ces fonctions
+
+3) dans fonction main robotControl.c :: 
+   x_goal = {0, 0, DBL_MAX, NULL, NULL};
+   définitions de x_initial et x_goal à chaque étape
+
+
+4) vérifier la spec de arctan dans le main de robotControl.c

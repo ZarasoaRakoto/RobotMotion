@@ -19,10 +19,8 @@ void StackDestroy(stackT *stackP)
 }
 
 // printf en mode debug
-void StackPush(stackT *stackP, stackElementT element)
-{
+void StackPush(stackT *stackP, stackElementT element) {
 	if (StackIsFull(stackP)) {
-		printf("\n reallocation stack à %d elements \n", stackP->maxSize * 2);
 		stackP->contents = realloc(stackP->contents, stackP->maxSize * 2 * sizeof(stackElementT));
 		assert(stackP->contents);
 		stackP->maxSize *= 2;
@@ -30,8 +28,7 @@ void StackPush(stackT *stackP, stackElementT element)
 	stackP->contents[++stackP->top] = element;
 }
 
-stackElementT StackPop(stackT *stackP)
-{
+stackElementT StackPop(stackT *stackP){
 	assert(!StackIsEmpty(stackP));
 	return stackP->contents[stackP->top--];
 }

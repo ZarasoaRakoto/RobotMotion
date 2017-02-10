@@ -72,7 +72,7 @@ void removeNode(VGnode *p){
 	if(p->right) p->right->left = p->left;
 }
 
-static int compare_points (void const *a, void const *b)
+int compare_points (void const *a, void const *b)
 {
    Raw_point const *pa = ((VGnode*)a)->point;
    Raw_point const *pb = ((VGnode*)b)->point;

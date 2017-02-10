@@ -26,5 +26,7 @@
     #define MAX(A,B) ((A) >= (B) ? A : B)
     #define MIN(A,B) ((A) <= (B) ? A : B)
     #define M_PI 3.14159265358979323846
+    #define TURN_PRECISION 1.0e-3
+    #define FORWARD_PRECISION 1.0
 
 #endif

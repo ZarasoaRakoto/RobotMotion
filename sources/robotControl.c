@@ -1,4 +1,5 @@
 #include "containers.h"
+#include "visibilityGraph.h"
 
 unsigned char gaelle (unsigned char);
 int* init_intervals(void);
@@ -22,6 +23,7 @@ int* init_intervals(void){
 
 void turn(double angle){
     // Send a TURN command to the rover
+    if (abs(angle) < TURN_PRECISION) return;
     fprintf(stdout, "CMD TURN %lf\n", angle);
     fflush(stdout);
     // Check that rover executed the command
@@ -31,6 +33,7 @@ void turn(double angle){
 
 void forward(double distance){
     // Send a FORWARD command to the rover
+    if(distance < FORWARD_PRECISION) return;
     fprintf(stdout, "CMD FORWARD %lf\n", distance);
     fflush(stdout);
     // Check that rover executed the command
@@ -192,6 +195,8 @@ void forward_label_correcting(Raw_point *xi, Raw_point *xg){
     }
     // reconstructing the path
     assert(guess == xg);
+    list_delete(guess->adjlist->head);
+    free(guess->adjlist); guess->adjlist = NULL; // NULL terminated path
     while(guess->prev){
         list_delete(guess->prev->adjlist->head);
         list_insert(guess->prev->adjlist, guess);
@@ -199,11 +204,46 @@ void forward_label_correcting(Raw_point *xi, Raw_point *xg){
     }
 }
 
+void convex_hulls(Obstacles * obs){
+
+}
+
 
 int main(int agrc, char**argv){
-    Obstacles * obs = init_obstacles(10);
-    obs = camera(obs);
-    printf("nombre d'obstacles : %d \n", obs->size);
+    bool arrived = false;
+    Raw_point start = (Raw_point){0,0,0,NULL,NULL}, *x_i = &start, *x_goal;
+    double angle_i = -0.25 * M_PI, curr_angle = angle_i, distance;
+    int nb_points;
+    Obstacles *obs = init_obstacles(3);
+    while(!arrived){
+        obs = camera(obs);
+        convex_hulls(obs);
+        nb_points = 2;
+        for(int i=0; i < obs->size; i++) nb_points += obs->polygons[i].size; 
+        VGnode *pointlist = malloc(nb_points * sizeof(*pointlist));
+        *x_goal = (Raw_point){0, 0, DBL_MAX, NULL, NULL};
+        pointlist[0] = (VGnode){x_i, NULL, NULL, NULL, NULL};
+        pointlist[1] = (VGnode){x_goal, NULL, NULL, NULL, NULL};
+        for(int i=0; i<nb_points-2; i++) { 
+            int j;
+            for(j=0; j<obs->polygons[i].size; j++) 
+                pointlist[i+2] = (VGnode){&obs->polygons[i].points[j], NULL, NULL, NULL, NULL};
+        } 
+        computeVgraph(pointlist, nb_points);
+        forward_label_correcting(x_i, x_goal);
+        while(x_i->adjlist) { // rotation et forward
+            x_goal = x_i->adjlist->head->item;
+            distance = sqrt(pow(x_i->x - x_goal->x ,2) + pow(x_i->y - x_goal->y, 2));
+            curr_angle = atan((x_i->y - x_goal->y) / (x_i->x - x_goal->x));
+            turn(curr_angle-angle_i);
+            angle_i = curr_angle;
+            forward(distance);
+            x_i = x_goal;
+        }
+        free(pointlist);
+        if(abs(x_i->x) < 5 && abs(x_i->y) < 5) arrived = true;
+    }
+    printf("finished \n");
     return 0;
 }
 
