@@ -3,6 +3,7 @@
    de motion planning
 */
 #include "containers.h"
+
 bool item_less(PQItem i1, PQItem i2){
     return (i1->key < i2->key ? true : false);
 }
@@ -122,15 +123,15 @@ AdjList* init_list(void){
 }
 
 void list_insert(AdjList *L, ListItem i){ // always downward : the first adj element should remain the first
-	AdjListNode *new = malloc(sizeof(*new)); assert(new);
+	struct AdjListNode *new = malloc(sizeof(*new)); assert(new);
 	new->item = i;
 	if(L->head) {
 		new->next = L->head->next; L->head->next = new;
 	}
-	else { L->head = new; new->next = NULL}
+	else { L->head = new; new->next = NULL;}
 }
 
-void list_delete(AdjListNode *L){
+void list_delete(struct AdjListNode *L){
 	if(L) {
 		if (L->next) list_delete(L->next);
 		free(L);

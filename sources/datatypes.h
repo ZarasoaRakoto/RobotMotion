@@ -2,16 +2,28 @@
 #define _DATATYPES_
 #include "stdclibs.h"
 /* définitions des types de données nécessaies */
+struct pt;
+typedef struct pt Raw_point;
+typedef Raw_point* ListItem; 
+// A structure to represent an adjacency list node
+struct AdjListNode {
+    ListItem item;
+    struct AdjListNode* next;
+};
+ 
+// A structure to represent an adjacency list
+typedef struct {
+    struct AdjListNode *head;  // pointer to head node of list
+} AdjList;
 
-bool item_less(PQItem *i1, PQItem *i2);
 
-typedef struct pt {
+struct pt {
     double x;
     double y;
     double key;       // used for dijkstra algorithm
     AdjList *adjlist;       // adjacency list
     struct pt *prev;  // useful for reconstructing the path from the goal node
-} Raw_point;
+};
 
 typedef Raw_point* PQItem; // too many memory copies for fixup and fixdown heap operations !!
 
@@ -28,7 +40,6 @@ typedef struct{
     Raw_point *base, *next;
 } VGedge;
 
-
 typedef struct {
     Raw_point *points;
     int size; int maxSize;
@@ -38,19 +49,6 @@ typedef struct {
     Polygon *polygons;
     int size; int maxSize;
 } Obstacles;
-
-typedef Raw_point* ListItem; 
-// A structure to represent an adjacency list node
-struct AdjListNode
-{
-    ListItem item;
-    struct AdjListNode* next;
-};
- 
-// A structure to represent an adjacency list
-typedef struct {
-    struct AdjListNode *head;  // pointer to head node of list
-} AdjList;
 
 
 #define nb_obs_points 3

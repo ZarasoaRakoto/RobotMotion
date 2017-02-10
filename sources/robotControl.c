@@ -166,10 +166,11 @@ unsigned char gaelle(unsigned char c){
 void forward_label_correcting(Raw_point *xi, Raw_point *xg){
     // implementation of Dijkstra algorithm
     PQ* prior_queue = PQinit(10, false);
-    xi.key = 0; // all other keys are std::DBL_MAX
+    xi->key = 0; // all other keys are std::DBL_MAX
     xi->prev = NULL;
     double next_dist;
-    Raw_point *temp, *guess; AdjListNode *active_node;
+    Raw_point *temp, *guess; 
+    struct AdjListNode *active_node;
     assert(PQinstert(prior_queue, xi));
     while(!PQEmpty(prior_queue)){
         temp = PQdelmax(prior_queue);
@@ -177,11 +178,11 @@ void forward_label_correcting(Raw_point *xi, Raw_point *xg){
         while(active_node){
             guess = active_node->item;
             next_dist = sqrt(pow(temp->x - guess->x, 2) + pow(temp->y - guess->y, 2));
-            if (temp.key + next_dist < MIN(guess->key, xg->key)){
+            if (temp->key + next_dist < MIN(guess->key, xg->key)){
                 guess->key = temp->key + next_dist;
                 guess->prev = temp;
                 if (guess != xg) assert(PQinstert(prior_queue, guess));
-                else {
+                else{
                     prior_queue->nElems = 0; // artificially emptying the queue
                     break;
                 }

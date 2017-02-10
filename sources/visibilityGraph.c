@@ -1,4 +1,4 @@
-#include "datatypes.h"
+#include "containers.h"
 #include "visibilityGraph.h"
 #include "stack.h"
 
@@ -8,10 +8,12 @@
 	complexity worst case O(n^2)
 */
 
-void computeVgraph(VGnode * pointlist, int size){
+void computeVgraph(VGnode *pointlist, int size){
 	sortNodes(pointlist, size);
-	VGnode pInf = {pointlist[0].x, DBL_MAX, NULL, NULL, NULL, NULL};
-	VGnode mpInf = {pointlist[0].x, DBL_MIN, NULL, NULL, NULL, NULL};
+	Raw_point pinf = {pointlist[0].point->x, DBL_MAX, DBL_MAX, NULL, NULL};
+	Raw_point mpinf = {pointlist[0].point->x, DBL_MIN, DBL_MAX, NULL, NULL};
+	VGnode pInf = {&pinf, NULL, NULL, NULL, NULL};
+	VGnode mpInf = {&mpinf, NULL, NULL, NULL, NULL};
 	addRightmost(&mpInf, &pInf);
 	int i;
 	for(i=0; i<size; i++) addRightmost(&pointlist[i], &mpInf);
@@ -72,8 +74,8 @@ void removeNode(VGnode *p){
 
 static int compare_points (void const *a, void const *b)
 {
-   Raw_point const *pa = a->point;
-   Raw_point const *pb = b->point;
+   Raw_point const *pa = ((VGnode*)a)->point;
+   Raw_point const *pb = ((VGnode*)b)->point;
    return ((pa->x < pb->x) || ((pa->x == pb->x) && (pa->y < pb->y)));
 }
 
@@ -85,17 +87,18 @@ void sortNodes(VGnode * pointlist, int size){
 bool leftTurn(VGnode *p, VGnode *q, VGnode *r){
 	assert(p->father && q->father);
 	if (!r->father) return (compare_points(p , q) ? true : false); // handling pInf case
-	pp = p->point; qp = q->point; rp = r->point;
+	Raw_point *pp = p->point, *qp = q->point, *rp = r->point;
 	return ((((qp->x - pp->x) * (rp->y - pp->y) - (rp->x - pp->x) * (qp->y - pp->y)) > 0) ? true : false);
 }
 
 bool gatherEdge(Raw_point *p1, Raw_point *p2){
 	// populating the motion visibility graph
 	if (!(p1->adjlist->head) || (p1->adjlist->head->item != p2)) list_insert(p1->adjlist, p2);
+	return true;
 }
 
 VGedge Edge(VGnode *n){
-	VGedge e =  {&n->point, &n->point->next};
+	VGedge e =  {n->point, n->point->adjlist->head->item};
 	return e;
 }
 VGedge VISIBLE(VGnode *n){

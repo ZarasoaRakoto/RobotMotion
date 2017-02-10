@@ -7,7 +7,7 @@ CFLAGS = -Wall -Werror -std=gnu99
 BASE_HEADERS = $(SOURCE_DIR)/stdclibs.h
 PREFIX =
 C_LIB_DIR =
-C_LIB = 
+C_LIB = -lm
 
 INCLUDE_DIR = 
 TEST_SOURCES = $(SOURCES)
@@ -20,13 +20,13 @@ all: test clean
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $(C_LIB) $^ -o $@
 	rm -f $(SOURCE_DIR)/*.o
 
 clean: 
 	rm -f $(TARGET) $(OBJS) $(TEST_OBJS)
 
 test: $(TEST_OBJS)
-	$(CC) $(CFLAGS) $^ -o $@
+	$(CC)  $^ -o $@ $(C_LIB)
 
 .PHONY: clean all
