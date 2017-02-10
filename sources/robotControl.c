@@ -76,7 +76,7 @@ Obstacles* camera(Obstacles *obstacles){ // intervals = [i1, i2, last_j]*
 
 void shrink(Obstacles* obstacles, int *intervals, int i1, int i2, int j){
     bool already_merged = false; int base_index = 0;
-    Raw_point new1 = {0,0,DBL_MAX, NULL, NULL, NULL}, new2 = {0,0,DBL_MAX, NULL, NULL, NULL};
+    Raw_point new1 = {i1,j,DBL_MAX, NULL, NULL, NULL}, new2 = {i2,j,DBL_MAX, NULL, NULL, NULL};
     int *last_used = &intervals[0], *free_index = &intervals[1];
     for(int i = 1; i < *last_used; i++){
         if (i2 >= intervals[3*i] && i1 <= intervals[3*i+1]) { // adding a point in growing polygon
@@ -211,10 +211,9 @@ void convex_hulls(Obstacles * obs){
     }
 }
 
-
 int main(int agrc, char**argv){
     bool arrived = false;
-    Raw_point start = (Raw_point){0,0,0,NULL,NULL}, *x_i = &start, *x_goal;
+    Raw_point start = (Raw_point){-240,-240,0,NULL,NULL}, *x_i = &start, *x_goal;
     double angle_i = -0.25 * M_PI, curr_angle = angle_i, distance;
     int nb_points;
     Obstacles *obs = init_obstacles(3);
@@ -244,9 +243,10 @@ int main(int agrc, char**argv){
             x_i = x_goal;
         }
         free(pointlist);
+
         if(abs(x_i->x) < 5 && abs(x_i->y) < 5) arrived = true;
     }
-    printf("finished \n");
+    fprintf(stdout, "CMD STOP \n"); // arret volontaire du programme si encore en cours
     return 0;
 }
 

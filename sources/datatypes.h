@@ -18,8 +18,8 @@ typedef struct {
 
 
 struct pt {
-    double x;
-    double y;
+    int x;
+    int y;
     double key;       // used for dijkstra algorithm
     AdjList *adjlist;       // adjacency list
     struct pt *prev;  // useful for reconstructing the path from the goal node

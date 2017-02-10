@@ -9,6 +9,8 @@
     #include <string.h>
     #include <float.h>
     #include <math.h>
+    #include <limits.h>
+
 
     #if __STDC_VERSION__ >= 199901L
         /* C99 code */

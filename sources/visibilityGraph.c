@@ -10,8 +10,8 @@
 
 void computeVgraph(VGnode *pointlist, int size){
 	sortNodes(pointlist, size);
-	Raw_point pinf = {pointlist[0].point->x, DBL_MAX, DBL_MAX, NULL, NULL};
-	Raw_point mpinf = {pointlist[0].point->x, DBL_MIN, DBL_MAX, NULL, NULL};
+	Raw_point pinf = {pointlist[0].point->x, INT_MAX, DBL_MAX, NULL, NULL};
+	Raw_point mpinf = {pointlist[0].point->x, INT_MIN, DBL_MAX, NULL, NULL};
 	VGnode pInf = {&pinf, NULL, NULL, NULL, NULL};
 	VGnode mpInf = {&mpinf, NULL, NULL, NULL, NULL};
 	addRightmost(&mpInf, &pInf);

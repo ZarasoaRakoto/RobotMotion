@@ -1,4 +1,4 @@
-TARGET = 
+TARGET = robotController
 SOURCE_DIR = sources
 SOURCES = $(SOURCE_DIR)/containers.c $(SOURCE_DIR)/robotControl.c $(SOURCE_DIR)/visibilityGraph.c $(SOURCE_DIR)/stack.c $(SOURCE_DIR)/graham.c
 OBJS = $(SOURCES:.c=.o)

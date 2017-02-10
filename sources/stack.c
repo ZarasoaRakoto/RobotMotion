@@ -10,8 +10,7 @@ void StackInit(stackT *stackP, int maxSize)
 	stackP->top = -1;  /* I.e., empty */
 }
 
-void StackDestroy(stackT *stackP)
-{
+void StackDestroy(stackT *stackP) {
 	if(stackP->contents) free(stackP->contents);
 	stackP->contents = NULL;
 	stackP->maxSize = 0;
