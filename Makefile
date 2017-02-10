@@ -1,6 +1,7 @@
 TARGET = robotController
 SOURCE_DIR = sources
-SOURCES = $(SOURCE_DIR)/containers.c $(SOURCE_DIR)/robotControl.c $(SOURCE_DIR)/visibilityGraph.c $(SOURCE_DIR)/stack.c $(SOURCE_DIR)/graham.c
+SOURCE_LIST = containers.c robotControl.c visibilityGraph.c stack.c graham.c
+SOURCES = $(addprefix $(SOURCE_DIR)/, $(SOURCE_LIST))
 OBJS = $(SOURCES:.c=.o)
 CC = gcc
 CFLAGS = -Wall -Werror -std=gnu99
